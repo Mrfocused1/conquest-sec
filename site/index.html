@@ -414,6 +414,149 @@
     transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
   .socials a:hover { color: #fff; border-color: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+  /* ---------- Consultation enquiry form ---------- */
+  .enquiry { padding: 120px 0; border-top: 1px solid var(--border); position: relative; overflow: hidden; }
+  .enquiry::before {
+    content: ""; position: absolute; bottom: -200px; left: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
+    pointer-events: none;
+  }
+  .enquiry-grid {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: minmax(0,35fr) minmax(0,65fr);
+    gap: 64px; align-items: start;
+    opacity: 0; transform: translateY(18px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .enquiry-grid.visible { opacity: 1; transform: none; }
+  .enquiry-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .enquiry h2 {
+    font-size: 52px; font-weight: 600; line-height: 1.1;
+    letter-spacing: -2px; margin-top: 20px;
+  }
+  .enquiry .lead {
+    font-size: 18px; line-height: 1.7; color: var(--text-2);
+    margin-top: 24px; max-width: 420px;
+  }
+  .trust-cards { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+  .trust-card {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 20px; padding: 24px;
+  }
+  .trust-card .t-icon {
+    width: 44px; height: 44px; flex-shrink: 0;
+    display: grid; place-items: center;
+    border-radius: 12px; background: rgba(255,255,255,0.04); color: #fff;
+  }
+  .trust-card .t-icon svg { width: 24px; height: 24px; }
+  .trust-card h3 { font-size: 16px; font-weight: 600; color: #fff; }
+  .trust-card p { font-size: 14px; line-height: 1.6; color: var(--text-2); margin-top: 6px; }
+
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px; padding: 48px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .field { display: flex; flex-direction: column; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+  .field label .req { color: var(--text-2); }
+  .field input, .field select, .field textarea {
+    font-family: inherit; font-size: 16px; color: #fff;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    width: 100%;
+  }
+  .field input, .field select { height: 52px; padding: 0 18px; }
+  .field textarea { min-height: 160px; padding: 16px 18px; resize: vertical; line-height: 1.6; }
+  .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: rgba(255,255,255,0.25);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.03);
+  }
+  .select-wrap { position: relative; }
+  .select-wrap select { appearance: none; -webkit-appearance: none; padding-right: 44px; cursor: pointer; }
+  .select-wrap select option { background: #111418; color: #fff; }
+  .select-wrap .chev {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; color: var(--muted); pointer-events: none;
+  }
+  .ta-wrap { position: relative; }
+  .char-count {
+    position: absolute; right: 14px; bottom: 12px;
+    font-size: 12px; color: var(--muted); pointer-events: none;
+  }
+  .agree { display: flex; align-items: flex-start; gap: 12px; margin-top: 4px; }
+  .agree input { appearance: none; -webkit-appearance: none;
+    width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px;
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 6px;
+    background: rgba(255,255,255,0.02); cursor: pointer;
+    position: relative; transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .agree input:checked { background: #fff; border-color: #fff; }
+  .agree input:checked::after {
+    content: ""; position: absolute; left: 6px; top: 2px;
+    width: 5px; height: 10px; border: solid #050608;
+    border-width: 0 2px 2px 0; transform: rotate(45deg);
+  }
+  .agree label { font-size: 14px; line-height: 1.6; color: var(--text-2); cursor: pointer; }
+  .agree a { color: #fff; }
+  .agree a:hover { text-decoration: underline; }
+  .form-submit {
+    width: 100%; height: 60px; margin-top: 4px;
+    background: #fff; color: #050608;
+    font-family: inherit; font-size: 16px; font-weight: 600;
+    border: none; border-radius: 14px; cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.12); }
+  .form-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+  .form-secure {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 18px; font-size: 14px; color: var(--muted);
+  }
+  .form-secure svg { width: 15px; height: 15px; }
+  .field .err { font-size: 12.5px; color: #EF4444; margin-top: 6px; display: none; }
+  .field.invalid input, .field.invalid textarea { border-color: rgba(239,68,68,0.5); }
+  .field.invalid .err { display: block; }
+  .form-success {
+    text-align: center; padding: 24px 0;
+  }
+  .form-success .ok-icon {
+    width: 64px; height: 64px; margin: 0 auto 20px;
+    display: grid; place-items: center; border-radius: 50%;
+    background: rgba(34,197,94,0.12); color: #22C55E;
+  }
+  .form-success .ok-icon svg { width: 30px; height: 30px; }
+  .form-success h3 { font-size: 24px; font-weight: 600; color: #fff; }
+  .form-success p { font-size: 16px; color: var(--text-2); margin-top: 10px; }
+
+  @media (max-width: 900px) {
+    .enquiry { padding: 72px 0; }
+    .enquiry-grid { grid-template-columns: 1fr; gap: 40px; }
+    .enquiry h2 { font-size: 36px; letter-spacing: -1px; }
+    .enquiry .lead { max-width: 100%; }
+    .trust-cards { margin-top: 28px; }
+    .form-card { padding: 32px; }
+    .form-grid { grid-template-columns: 1fr; gap: 16px; }
+  }
+  @media (max-width: 600px) {
+    .form-card { padding: 24px; border-radius: 20px; }
+    .enquiry h2 { font-size: 32px; }
+  }
   .socials svg { width: 18px; height: 18px; }
   .footer-bottom {
     display: flex;
@@ -835,7 +978,7 @@
 </section>
 
 <!-- ===== CTA Banner ===== -->
-<section style="padding-bottom:120px;" id="contact">
+<section style="padding-bottom:120px;">
   <div class="container inner">
     <div class="cta-banner">
       <img class="cta-mark" src="assets/conquest-logo-sm.webp" alt="" aria-hidden="true" />
@@ -843,7 +986,123 @@
         <h2>Ready to strengthen <br />your security?</h2>
         <p class="sub">Let's build a safer future together.</p>
       </div>
-      <a href="#" class="btn btn-primary btn-lg cta-btn">Book a Consultation <span class="btn-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a href="#contact" class="btn btn-primary btn-lg cta-btn">Book a Consultation <span class="btn-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Consultation Enquiry Form ===== -->
+<section class="enquiry" id="contact">
+  <div class="container inner">
+    <div class="enquiry-grid">
+      <!-- Left column -->
+      <div class="enquiry-intro">
+        <div class="enquiry-label">Book a Consultation</div>
+        <h2>Speak with a<br />security expert.</h2>
+        <p class="lead">Tell us about your environment and goals. A certified Conquest specialist will respond within 24 hours — no obligation.</p>
+        <div class="trust-cards">
+          <div class="trust-card">
+            <span class="t-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 8 11 8 11s8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg></span>
+            <div><h3>Expert Guidance</h3><p>Get personalized security advice from certified professionals.</p></div>
+          </div>
+          <div class="trust-card">
+            <span class="t-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></span>
+            <div><h3>Quick Response</h3><p>We respond to all enquiries within 24 hours.</p></div>
+          </div>
+          <div class="trust-card">
+            <span class="t-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+            <div><h3>Confidential</h3><p>Your information is secure and will never be shared.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: form -->
+      <div class="form-card">
+        <form id="enquiryForm" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="ef-name">Full Name <span class="req">*</span></label>
+              <input id="ef-name" name="name" type="text" placeholder="Enter your full name" autocomplete="name" required />
+              <span class="err">Please enter your name.</span>
+            </div>
+            <div class="field">
+              <label for="ef-email">Work Email <span class="req">*</span></label>
+              <input id="ef-email" name="email" type="email" placeholder="Enter your work email" autocomplete="email" required />
+              <span class="err">Please enter a valid email.</span>
+            </div>
+            <div class="field">
+              <label for="ef-company">Company Name</label>
+              <input id="ef-company" name="company" type="text" placeholder="Enter your company name" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="ef-title">Job Title</label>
+              <input id="ef-title" name="job_title" type="text" placeholder="Enter your job title" autocomplete="organization-title" />
+            </div>
+            <div class="field">
+              <label for="ef-phone">Phone Number</label>
+              <input id="ef-phone" name="phone" type="tel" placeholder="+1 (555) 123-4567" autocomplete="tel" />
+            </div>
+            <div class="field">
+              <label for="ef-size">Company Size</label>
+              <div class="select-wrap">
+                <select id="ef-size" name="company_size">
+                  <option value="">Select company size</option>
+                  <option>1–10</option>
+                  <option>11–50</option>
+                  <option>51–200</option>
+                  <option>201–1,000</option>
+                  <option>1,000+</option>
+                </select>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="ef-message">How can we help you? <span class="req">*</span></label>
+              <div class="ta-wrap">
+                <textarea id="ef-message" name="message" maxlength="500" placeholder="Tell us about your security challenges and goals…" required></textarea>
+                <span class="char-count"><span id="ef-count">0</span> / 500</span>
+              </div>
+              <span class="err">Please tell us how we can help.</span>
+            </div>
+            <div class="field full">
+              <label for="ef-service">Service of Interest</label>
+              <div class="select-wrap">
+                <select id="ef-service" name="service">
+                  <option value="">Select service you're interested in</option>
+                  <option>Security Assessment</option>
+                  <option>Threat Detection</option>
+                  <option>Incident Response</option>
+                  <option>Security Consulting</option>
+                  <option>Managed Security Services</option>
+                  <option>Compliance &amp; Risk Management</option>
+                  <option>Penetration Testing</option>
+                </select>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="field full">
+              <div class="agree">
+                <input id="ef-agree" type="checkbox" required />
+                <label for="ef-agree">I agree to the <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a>.</label>
+              </div>
+              <span class="err">Please accept the Privacy Policy and Terms.</span>
+            </div>
+            <div class="field full">
+              <button type="submit" class="form-submit" id="ef-submit">Submit Enquiry</button>
+              <div class="form-secure">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                Your information is encrypted and secure.
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="form-success" id="enquirySuccess" hidden>
+          <div class="ok-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+          <h3>Enquiry received</h3>
+          <p>Thank you — a Conquest specialist will be in touch within 24 hours.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>

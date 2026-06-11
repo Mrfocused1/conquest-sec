@@ -415,6 +415,10 @@ export type SubmissionRow = {
   name: string | null
   email: string | null
   company: string | null
+  job_title: string | null
+  phone: string | null
+  company_size: string | null
+  service: string | null
   message: string | null
   status: 'new' | 'read' | 'archived'
   created_at: string
@@ -423,7 +427,7 @@ export type SubmissionRow = {
 export async function fetchSubmissions(): Promise<SubmissionRow[] | null> {
   const { data, error } = await supabase
     .from('form_submissions')
-    .select('id,form_type,name,email,company,message,status,created_at')
+    .select('id,form_type,name,email,company,job_title,phone,company_size,service,message,status,created_at')
     .order('created_at', { ascending: false })
   return error ? null : (data as SubmissionRow[])
 }

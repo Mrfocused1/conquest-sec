@@ -103,6 +103,14 @@ export function FormsScreen() {
                   })}
                 </span>
               </div>
+              {(s.job_title || s.phone || s.company_size || s.service) && (
+                <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-t3">
+                  {s.job_title && <span>Role: <span className="text-t2">{s.job_title}</span></span>}
+                  {s.phone && <span>Phone: <span className="text-t2">{s.phone}</span></span>}
+                  {s.company_size && <span>Size: <span className="text-t2">{s.company_size}</span></span>}
+                  {s.service && <span>Service: <span className="text-t2">{s.service}</span></span>}
+                </div>
+              )}
               {s.message && <p className="mt-2.5 text-[13.5px] leading-relaxed text-t2">{s.message}</p>}
               <div className="mt-3 flex items-center gap-2">
                 {s.status !== 'read' && (

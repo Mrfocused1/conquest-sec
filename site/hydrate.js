@@ -133,3 +133,84 @@
     });
   });
 })();
+
+/* ----- Consultation enquiry form ----- */
+(function () {
+  var form = document.getElementById('enquiryForm');
+  if (!form) return;
+  var URL = 'https://pcpvshepcdahfrmvzxcy.supabase.co';
+  var KEY = 'sb_publishable_F56AK9IgrvFxJZ6aHXy3Ag_PAleGBrb';
+
+  // Fade-in on scroll
+  var grid = document.querySelector('.enquiry-grid');
+  if (grid && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (e) {
+      if (e[0].isIntersecting) { grid.classList.add('visible'); io.disconnect(); }
+    }, { threshold: 0.12 });
+    io.observe(grid);
+  } else if (grid) {
+    grid.classList.add('visible');
+  }
+
+  // Character counter
+  var ta = document.getElementById('ef-message');
+  var count = document.getElementById('ef-count');
+  if (ta && count) ta.addEventListener('input', function () { count.textContent = ta.value.length; });
+
+  function fieldOf(el) { return el.closest('.field'); }
+  function setInvalid(el, bad) { var f = fieldOf(el); if (f) f.classList.toggle('invalid', bad); }
+
+  var submitBtn = document.getElementById('ef-submit');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('ef-name');
+    var email = document.getElementById('ef-email');
+    var message = document.getElementById('ef-message');
+    var agree = document.getElementById('ef-agree');
+
+    var ok = true;
+    var emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+    [[name, !name.value.trim()], [email, !emailValid], [message, !message.value.trim()], [agree, !agree.checked]]
+      .forEach(function (p) { if (p[1]) ok = false; setInvalid(p[0], p[1]); });
+    if (!ok) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    var payload = {
+      form_type: 'consultation',
+      name: name.value.trim(),
+      email: email.value.trim(),
+      company: document.getElementById('ef-company').value.trim() || null,
+      job_title: document.getElementById('ef-title').value.trim() || null,
+      phone: document.getElementById('ef-phone').value.trim() || null,
+      company_size: document.getElementById('ef-size').value || null,
+      service: document.getElementById('ef-service').value || null,
+      message: message.value.trim(),
+    };
+
+    fetch(URL + '/rest/v1/form_submissions', {
+      method: 'POST',
+      headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify(payload),
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error('submit failed');
+        form.hidden = true;
+        var ok = document.getElementById('enquirySuccess');
+        if (ok) ok.hidden = false;
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Enquiry';
+        submitBtn.insertAdjacentHTML('afterend',
+          '<p style="color:#EF4444;font-size:13.5px;text-align:center;margin-top:12px">Something went wrong. Please try again or email us directly.</p>');
+      });
+  });
+
+  // Clear invalid state as the user corrects fields
+  form.addEventListener('input', function (e) {
+    if (e.target.closest('.field.invalid')) setInvalid(e.target, false);
+  });
+})();
