@@ -25,10 +25,18 @@
   }
 
   // ----- Hero + CTA (sections table) -----
-  get('sections?select=slug,content&slug=in.(hero,cta)').then(function (rows) {
+  get('sections?select=slug,content,design&slug=in.(hero,cta)').then(function (rows) {
     if (!rows) return;
     var bySlug = {};
-    rows.forEach(function (r) { bySlug[r.slug] = r.content || {}; });
+    var design = {};
+    rows.forEach(function (r) { bySlug[r.slug] = r.content || {}; if (r.slug === 'hero') design = r.design || {}; });
+
+    // Custom uploaded logo overrides every logo image on the page.
+    if (design.logo_url) {
+      document.querySelectorAll('.hero-logo .shield, .hero-logo-m, .cta-mark, .brand .mark').forEach(function (img) {
+        img.setAttribute('src', design.logo_url);
+      });
+    }
 
     var hero = bySlug.hero;
     if (hero) {

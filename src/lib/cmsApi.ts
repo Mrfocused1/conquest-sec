@@ -92,6 +92,7 @@ export async function fetchHero(): Promise<HeroBundle | null> {
       logoSize: Number(d.logo_size ?? 420),
       logoPosition: (d.logo_position as HeroDesign['logoPosition']) ?? 'Right',
       logoAlt: (d.logo_alt as string) ?? 'Conquest Security Logo',
+      logoUrl: (d.logo_url as string) ?? '',
       bgStyle: (d.bg_style as string) ?? 'Dark Gradient',
       topPadding: Number(d.top_padding ?? 120),
       bottomPadding: Number(d.bottom_padding ?? 120),
@@ -130,6 +131,7 @@ export async function saveHero(b: HeroBundle): Promise<{ ok: boolean; error?: st
         logo_size: b.design.logoSize,
         logo_position: b.design.logoPosition,
         logo_alt: b.design.logoAlt,
+        logo_url: b.design.logoUrl,
         bg_style: b.design.bgStyle,
         top_padding: b.design.topPadding,
         bottom_padding: b.design.bottomPadding,
@@ -501,4 +503,165 @@ export async function fetchRecentAudit(limit = 3): Promise<AuditRow[] | null> {
     .order('created_at', { ascending: false })
     .limit(limit)
   return error ? null : (data as AuditRow[])
+}
+
+/* ===================== Media library (Supabase Storage) ===================== */
+
+export type MediaRow = {
+  id: string
+  name: string
+  type: 'image' | 'document' | 'logo' | 'icon'
+  url: string
+  size_bytes: number | null
+  created_at: string
+}
+
+export async function fetchMedia(): Promise<MediaRow[] | null> {
+  const { data, error } = await supabase
+    .from('media')
+    .select('id,name,type,url,size_bytes,created_at')
+    .order('created_at', { ascending: false })
+  return error ? null : (data as MediaRow[])
+}
+
+function slugifyFile(name: string): string {
+  const dot = name.lastIndexOf('.')
+  const base = (dot >= 0 ? name.slice(0, dot) : name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const ext = dot >= 0 ? name.slice(dot).toLowerCase() : ''
+  // unique-ish without Date.now() concerns in the browser (Date is fine here)
+  return `${base || 'file'}-${Math.floor(Date.now() / 1000)}${ext}`
+}
+
+export type UploadResult = { ok: boolean; url?: string; error?: string }
+
+export async function uploadMedia(
+  file: File,
+  type: MediaRow['type'] = 'image',
+): Promise<UploadResult> {
+  const path = slugifyFile(file.name)
+  const up = await supabase.storage.from('media').upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: file.type,
+  })
+  if (up.error) return { ok: false, error: up.error.message }
+  const { data: pub } = supabase.storage.from('media').getPublicUrl(path)
+  const url = pub.publicUrl
+  const { data: userData } = await supabase.auth.getUser()
+  await supabase.from('media').insert({
+    name: file.name,
+    type,
+    url,
+    size_bytes: file.size,
+  })
+  void logAudit('upload', 'Media Library', `Uploaded ${file.name}`)
+  void userData
+  return { ok: true, url }
+}
+
+export async function deleteMedia(row: MediaRow): Promise<Result> {
+  // Best-effort remove the storage object (derive path from public URL).
+  const marker = '/object/public/media/'
+  const idx = row.url.indexOf(marker)
+  if (idx >= 0) {
+    const path = row.url.slice(idx + marker.length)
+    await supabase.storage.from('media').remove([path])
+  }
+  const { error } = await supabase.from('media').delete().eq('id', row.id)
+  if (error) return { ok: false, error: error.message }
+  void logAudit('delete', 'Media Library', `Deleted ${row.name}`)
+  return { ok: true }
+}
+
+/* ===================== Hero logo (stored in design jsonb) ===================== */
+
+export async function saveHeroLogo(url: string): Promise<Result> {
+  const { data } = await supabase.from('sections').select('design').eq('slug', 'hero').maybeSingle()
+  const design = ((data?.design as Record<string, unknown>) ?? {})
+  design.logo_url = url
+  const { error } = await supabase.from('sections').update({ design }).eq('slug', 'hero')
+  if (error) return { ok: false, error: error.message }
+  void logAudit('update', 'Hero Section', 'Changed hero logo')
+  return { ok: true }
+}
+
+/* ===================== User management (profiles) ===================== */
+
+export type ProfileRow = {
+  id: string
+  name: string
+  email: string
+  role: 'admin' | 'editor' | 'author' | 'viewer'
+  status: 'active' | 'invited' | 'suspended'
+  last_active_at: string | null
+}
+
+export async function fetchProfiles(): Promise<ProfileRow[] | null> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id,name,email,role,status,last_active_at')
+    .order('created_at')
+  return error ? null : (data as ProfileRow[])
+}
+
+export async function fetchMyRole(): Promise<ProfileRow['role'] | null> {
+  const { data: u } = await supabase.auth.getUser()
+  if (!u.user) return null
+  const { data } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('user_id', u.user.id)
+    .maybeSingle()
+  return (data?.role as ProfileRow['role']) ?? null
+}
+
+export async function inviteUser(
+  name: string,
+  email: string,
+  role: ProfileRow['role'],
+): Promise<Result> {
+  const { error } = await supabase
+    .from('profiles')
+    .insert({ name, email, role, status: 'invited' })
+  if (error) return { ok: false, error: error.message }
+  void logAudit('invite', 'Users', `Invited ${email} as ${role}`)
+  return { ok: true }
+}
+
+export async function updateProfile(
+  id: string,
+  patch: Partial<Pick<ProfileRow, 'role' | 'status'>>,
+): Promise<Result> {
+  const { error } = await supabase.from('profiles').update(patch).eq('id', id)
+  if (error) return { ok: false, error: error.message }
+  void logAudit('update', 'Users', 'Updated a team member')
+  return { ok: true }
+}
+
+export async function deleteProfile(id: string): Promise<Result> {
+  const { error } = await supabase.from('profiles').delete().eq('id', id)
+  if (error) return { ok: false, error: error.message }
+  void logAudit('delete', 'Users', 'Removed a team member')
+  return { ok: true }
+}
+
+/* ===================== Audit log (full list) ===================== */
+
+export type AuditFull = {
+  id: string
+  actor_name: string | null
+  action: string
+  entity_type: string | null
+  section: string | null
+  summary: string | null
+  created_at: string
+}
+
+export async function fetchAuditLog(limit = 100): Promise<AuditFull[] | null> {
+  const { data, error } = await supabase
+    .from('audit_logs')
+    .select('id,actor_name,action,entity_type,section,summary,created_at')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  return error ? null : (data as AuditFull[])
 }

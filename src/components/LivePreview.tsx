@@ -67,7 +67,7 @@ export function LivePreview({ compact = false }: { compact?: boolean }) {
         {!logoCenter && (
           <div className="flex flex-1 items-center justify-center">
             <img
-              src={LOGO_URL}
+              src={design.logoUrl || LOGO_URL}
               alt={design.logoAlt}
               className="select-none object-contain"
               style={{

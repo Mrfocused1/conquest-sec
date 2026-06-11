@@ -39,7 +39,10 @@ export const NAV: NavItem[] = [
     ],
   },
   { key: 'pages', label: 'Pages', icon: 'pages' },
+  { key: 'media', label: 'Media Library', icon: 'media' },
   { key: 'forms', label: 'Forms', icon: 'forms' },
+  { key: 'users', label: 'Users', icon: 'users' },
+  { key: 'audit', label: 'Audit Log', icon: 'audit' },
   { key: 'settings', label: 'Settings', icon: 'settings' },
 ]
 

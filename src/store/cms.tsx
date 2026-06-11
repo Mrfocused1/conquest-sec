@@ -15,6 +15,7 @@ export type HeroDesign = {
   logoSize: number
   logoPosition: 'Left' | 'Right' | 'Center'
   logoAlt: string
+  logoUrl: string
   bgStyle: string
   topPadding: number
   bottomPadding: number
@@ -66,6 +67,7 @@ const defaultDesign: HeroDesign = {
   logoSize: 420,
   logoPosition: 'Right',
   logoAlt: 'Conquest Security Logo',
+  logoUrl: '',
   bgStyle: 'Dark Gradient',
   topPadding: 120,
   bottomPadding: 120,

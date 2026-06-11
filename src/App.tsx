@@ -12,7 +12,10 @@ import { CtaEditor } from './components/editors/CtaEditor'
 import { FooterEditor } from './components/editors/FooterEditor'
 import { NavigationEditor } from './components/editors/NavigationEditor'
 import { PagesScreen } from './components/screens/PagesScreen'
+import { MediaScreen } from './components/screens/MediaScreen'
 import { FormsScreen } from './components/screens/FormsScreen'
+import { UsersScreen } from './components/screens/UsersScreen'
+import { AuditScreen } from './components/screens/AuditScreen'
 import { SettingsScreen } from './components/screens/SettingsScreen'
 import { MobileTopBar } from './components/mobile/MobileTopBar'
 import { MobileDashboard } from './components/mobile/MobileDashboard'
@@ -55,8 +58,14 @@ function renderSection(key: NavKey): ReactNode {
       return <NavigationEditor />
     case 'pages':
       return <PagesScreen />
+    case 'media':
+      return <MediaScreen />
     case 'forms':
       return <FormsScreen />
+    case 'users':
+      return <UsersScreen />
+    case 'audit':
+      return <AuditScreen />
     case 'settings':
       return <SettingsScreen />
     default:
