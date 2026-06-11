@@ -2,12 +2,9 @@ import { Icon } from './Icon'
 
 const COPY: Record<string, { icon: string; title: string; body: string }> = {
   pages: { icon: 'pages', title: 'Pages', body: 'Create and manage standalone pages — About, Pricing, Legal and more.' },
-  blog: { icon: 'blog', title: 'Blog', body: 'Draft, schedule and publish articles with the structured content editor.' },
-  media: { icon: 'media', title: 'Media Library', body: 'Upload, organize and search images, documents, logos and icons in folders.' },
   forms: { icon: 'forms', title: 'Forms', body: 'Review consultation requests and form submissions from the live site.' },
   settings: { icon: 'settings', title: 'Settings', body: 'Configure site-wide preferences, domains, integrations and theming.' },
-  users: { icon: 'users', title: 'User Management', body: 'Invite teammates and manage Admin, Editor, Author and Viewer roles.' },
-  audit: { icon: 'audit', title: 'Audit Log', body: 'Track every change — user, action, section modified and timestamp.' },
+  profile: { icon: 'profile', title: 'Your Profile', body: 'Manage your account details, avatar, password and notification preferences.' },
   trusted: { icon: 'trusted', title: 'Trusted By', body: 'Manage the partner logos shown in the homepage marquee.' },
   services: { icon: 'services', title: 'Services', body: 'Edit the four service cards, their icons, titles and descriptions.' },
   impact: { icon: 'impact', title: 'Impact Metrics', body: 'Update the headline statistics and their animated count-up values.' },

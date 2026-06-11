@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { fetchHero, saveHero } from '../lib/cmsApi'
 
 export type HeroContent = {
   topLabel: string
@@ -89,6 +90,25 @@ export function CmsProvider({ children }: { children: ReactNode }) {
   const [customCss, setCustomCss] = useState('hero-section')
   const [dirty, setDirty] = useState(false)
 
+  // Hydrate from Supabase on first load (falls back to defaults if unavailable).
+  useEffect(() => {
+    let active = true
+    fetchHero()
+      .then((b) => {
+        if (!active || !b) return
+        setContentState(b.content)
+        setDesignState(b.design)
+        setVisibilityState(b.visibility)
+        setSeoState(b.seo)
+        setCustomCss(b.customCss)
+        setDirty(false)
+      })
+      .catch(() => {})
+    return () => {
+      active = false
+    }
+  }, [])
+
   const value = useMemo<CmsState>(
     () => ({
       content,
@@ -117,7 +137,12 @@ export function CmsProvider({ children }: { children: ReactNode }) {
         setDirty(true)
       },
       dirty,
-      markSaved: () => setDirty(false),
+      markSaved: () => {
+        setDirty(false)
+        // Best-effort persist. Writes require an authenticated session (RLS);
+        // failures are swallowed so the local editing experience never blocks.
+        saveHero({ content, design, visibility, seo, customCss }).catch(() => {})
+      },
     }),
     [content, design, visibility, seo, customCss, dirty],
   )

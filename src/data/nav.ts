@@ -39,12 +39,8 @@ export const NAV: NavItem[] = [
     ],
   },
   { key: 'pages', label: 'Pages', icon: 'pages' },
-  { key: 'blog', label: 'Blog', icon: 'blog' },
-  { key: 'media', label: 'Media Library', icon: 'media' },
   { key: 'forms', label: 'Forms', icon: 'forms' },
   { key: 'settings', label: 'Settings', icon: 'settings' },
-  { key: 'users', label: 'Users', icon: 'users' },
-  { key: 'audit', label: 'Audit Log', icon: 'audit' },
 ]
 
 export const SECTIONS = [
@@ -59,7 +55,6 @@ export const SECTIONS = [
 export const METRICS = [
   { value: '12', label: 'Sections', sub: 'Manage all page sections', icon: 'layout' },
   { value: '48', label: 'Content Blocks', sub: 'Total editable blocks', icon: 'blog' },
-  { value: '32', label: 'Media Files', sub: 'Images and assets', icon: 'media' },
   { value: '1.2K', label: 'Page Views', sub: 'Last 30 days', icon: 'eye' },
 ]
 

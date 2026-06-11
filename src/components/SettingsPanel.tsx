@@ -2,6 +2,7 @@ import { Icon } from './Icon'
 import { FieldLabel, Select } from './ui/Field'
 import { Toggle } from './ui/Toggle'
 import { useCms } from '../store/cms'
+import { LOGO_URL } from '../lib/assets'
 
 export function SettingsPanel() {
   const { design, setDesign, visibility, setVisibility, customCss, setCustomCss } = useCms()
@@ -15,7 +16,7 @@ export function SettingsPanel() {
 
         <FieldLabel>Logo</FieldLabel>
         <div className="grid place-items-center rounded-xl border border-dashed border-white/10 bg-surface py-7">
-          <img src="/conquest-logo.png" alt="Current logo" className="h-24 w-auto object-contain" />
+          <img src={LOGO_URL} alt="Current logo" className="h-24 w-auto object-contain" />
         </div>
         <div className="mt-3 flex gap-2">
           <button className="btn-ghost flex-1">

@@ -5,13 +5,18 @@ export function MobileDashboard({ onOpenSection }: { onOpenSection: (key: NavKey
   return (
     <div className="px-4 pb-28 pt-5">
       {/* Welcome */}
-      <h1 className="text-[26px] font-bold tracking-[-0.02em] text-white">Welcome back, Admin 👋</h1>
+      <h1 className="text-[26px] font-bold tracking-[-0.02em] text-white">Welcome back, Admin</h1>
       <p className="mt-1 text-[14px] text-t3">Here's what's happening with your site today.</p>
 
-      {/* Metrics 2x2 */}
+      {/* Metrics */}
       <div className="mt-5 grid grid-cols-2 gap-3">
-        {METRICS.map((m) => (
-          <div key={m.label} className="card-surface p-4">
+        {METRICS.map((m, i) => (
+          <div
+            key={m.label}
+            className={`card-surface overflow-hidden p-4 ${
+              i === METRICS.length - 1 && METRICS.length % 2 === 1 ? 'col-span-2' : ''
+            }`}
+          >
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-white/[0.05] text-white">
               <Icon name={m.icon} size={18} />
             </span>
@@ -65,12 +70,7 @@ export function MobileDashboard({ onOpenSection }: { onOpenSection: (key: NavKey
         </div>
       </div>
 
-      <a
-        href="http://localhost:8755"
-        target="_blank"
-        rel="noreferrer"
-        className="btn-white mt-7 w-full"
-      >
+      <a href="/" target="_blank" rel="noreferrer" className="btn-white mt-7 w-full">
         <Icon name="external" size={16} />
         View Live Site
       </a>

@@ -88,12 +88,7 @@ export function Sidebar({ active, onNavigate }: Props) {
 
       {/* Bottom */}
       <div className="border-t border-white/[0.06] p-3">
-        <a
-          href="http://localhost:8755"
-          target="_blank"
-          rel="noreferrer"
-          className="btn-ghost mb-3 w-full"
-        >
+        <a href="/" target="_blank" rel="noreferrer" className="btn-ghost mb-3 w-full">
           <Icon name="external" size={16} />
           View Live Site
         </a>

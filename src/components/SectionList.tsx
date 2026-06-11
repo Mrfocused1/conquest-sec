@@ -1,13 +1,28 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Icon } from './Icon'
 import { SECTIONS } from '../data/nav'
+import { fetchSections, type SectionRow } from '../lib/cmsApi'
 
-type Row = (typeof SECTIONS)[number]
+const FALLBACK: SectionRow[] = SECTIONS.map((s) => ({
+  key: s.key,
+  name: s.name,
+  icon: s.icon,
+  status: s.status as 'Published' | 'Draft',
+  updated: s.updated,
+}))
 
 export function SectionList({ onEdit }: { onEdit?: (key: string) => void }) {
-  const [rows, setRows] = useState<Row[]>([...SECTIONS])
+  const [rows, setRows] = useState<SectionRow[]>(FALLBACK)
   const dragIndex = useRef<number | null>(null)
   const [overIndex, setOverIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetchSections()
+      .then((d) => {
+        if (d && d.length) setRows(d)
+      })
+      .catch(() => {})
+  }, [])
 
   function handleDrop(target: number) {
     const from = dragIndex.current

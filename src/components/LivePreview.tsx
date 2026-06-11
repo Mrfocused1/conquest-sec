@@ -1,4 +1,5 @@
 import { useCms } from '../store/cms'
+import { LOGO_URL } from '../lib/assets'
 
 /** Real-time homepage hero preview that mirrors the editor state. */
 export function LivePreview({ compact = false }: { compact?: boolean }) {
@@ -66,7 +67,7 @@ export function LivePreview({ compact = false }: { compact?: boolean }) {
         {!logoCenter && (
           <div className="flex flex-1 items-center justify-center">
             <img
-              src="/conquest-logo.png"
+              src={LOGO_URL}
               alt={design.logoAlt}
               className="select-none object-contain"
               style={{
@@ -79,7 +80,7 @@ export function LivePreview({ compact = false }: { compact?: boolean }) {
         )}
         {logoCenter && (
           <img
-            src="/conquest-logo.png"
+            src={LOGO_URL}
             alt={design.logoAlt}
             className="mt-5 select-none object-contain"
             style={{ width: `${Math.max(28, Math.min(60, (design.logoSize / 420) * 50))}%` }}

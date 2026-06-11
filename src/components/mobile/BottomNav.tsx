@@ -1,11 +1,10 @@
 import { Icon } from '../Icon'
 
-export type MobileTab = 'dashboard' | 'content' | 'media' | 'settings' | 'profile'
+export type MobileTab = 'dashboard' | 'content' | 'settings' | 'profile'
 
 const TABS: { key: MobileTab; label: string; icon: string }[] = [
   { key: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
   { key: 'content', label: 'Content', icon: 'content' },
-  { key: 'media', label: 'Media', icon: 'media' },
   { key: 'settings', label: 'Settings', icon: 'settings' },
   { key: 'profile', label: 'Profile', icon: 'profile' },
 ]

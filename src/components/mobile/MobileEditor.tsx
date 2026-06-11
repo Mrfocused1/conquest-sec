@@ -4,6 +4,7 @@ import { LivePreview } from '../LivePreview'
 import { FieldLabel, HelpRow, Select } from '../ui/Field'
 import { Toggle } from '../ui/Toggle'
 import { useCms } from '../../store/cms'
+import { LOGO_URL } from '../../lib/assets'
 
 type Tab = 'content' | 'design' | 'settings'
 
@@ -133,7 +134,7 @@ export function MobileEditor({ title, onBack }: { title: string; onBack: () => v
             <div>
               <FieldLabel>Logo</FieldLabel>
               <div className="grid place-items-center rounded-xl border border-dashed border-white/10 bg-surface py-7">
-                <img src="/conquest-logo.png" alt="Logo" className="h-20 w-auto object-contain" />
+                <img src={LOGO_URL} alt="Logo" className="h-20 w-auto object-contain" />
               </div>
               <button className="btn-ghost mt-3 w-full">
                 <Icon name="upload" size={15} />

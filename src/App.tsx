@@ -51,12 +51,12 @@ export default function App() {
       <div className="hidden h-screen lg:flex">
         <Sidebar active={active} onNavigate={setActive} />
         <main className="thin-scroll h-screen flex-1 overflow-y-auto">
-          <TopNav title={meta.t} subtitle={meta.s} />
+          <TopNav title={meta.t} subtitle={meta.s} onSettings={() => setActive('settings')} />
           <div className="p-8">
             {isEditorView ? (
               <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_330px]">
                 <div className="min-w-0 space-y-6">
-                  <div className="grid grid-cols-2 gap-5 xl:grid-cols-4">
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
                     {METRICS.map((m) => (
                       <MetricCard key={m.label} {...m} />
                     ))}
@@ -87,7 +87,7 @@ export default function App() {
           <MobileContentList onOpen={(title) => openEditor(title)} />
         ) : (
           <div className="px-4 py-5 pb-28">
-            <Placeholder which={tab === 'media' ? 'media' : tab === 'settings' ? 'settings' : 'users'} />
+            <Placeholder which={tab === 'settings' ? 'settings' : 'profile'} />
           </div>
         )}
 
@@ -150,7 +150,6 @@ export default function App() {
                       setDrawer(false)
                       setEditor({ open: false, title: '' })
                       if (item.key === 'dashboard') setTab('dashboard')
-                      else if (item.key === 'media') setTab('media')
                       else if (item.key === 'settings') setTab('settings')
                       else setTab('content')
                     }}
