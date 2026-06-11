@@ -1,11 +1,10 @@
 import { Icon } from './Icon'
 import { FieldLabel, Select } from './ui/Field'
-import { Toggle } from './ui/Toggle'
 import { useCms } from '../store/cms'
 import { LOGO_URL } from '../lib/assets'
 
 export function SettingsPanel() {
-  const { design, setDesign, visibility, setVisibility, customCss, setCustomCss } = useCms()
+  const { design, setDesign } = useCms()
 
   return (
     <div className="flex flex-col gap-5">
@@ -56,56 +55,6 @@ export function SettingsPanel() {
             options={['Left', 'Center', 'Right']}
           />
         </div>
-
-        <div className="mt-4">
-          <FieldLabel htmlFor="logoAlt">Logo Alt Text</FieldLabel>
-          <input
-            id="logoAlt"
-            className="input-field"
-            value={design.logoAlt}
-            onChange={(e) => setDesign({ logoAlt: e.target.value })}
-          />
-          <p className="mt-1.5 text-[12px] text-t3">Important for SEO and accessibility.</p>
-        </div>
-      </section>
-
-      {/* Section Visibility */}
-      <section className="card-surface fade-in p-5">
-        <div className="mb-4 text-[15px] font-semibold text-white">Section Visibility</div>
-        {([
-          ['desktop', 'Show on Desktop'],
-          ['tablet', 'Show on Tablet'],
-          ['mobile', 'Show on Mobile'],
-        ] as const).map(([k, label]) => (
-          <div key={k} className="flex items-center justify-between py-2.5">
-            <span className="text-[14px] text-t2">{label}</span>
-            <Toggle
-              checked={visibility[k]}
-              onChange={(v) => setVisibility({ [k]: v })}
-              label={label}
-            />
-          </div>
-        ))}
-      </section>
-
-      {/* Advanced */}
-      <section className="card-surface fade-in p-5">
-        <div className="mb-4 text-[15px] font-semibold text-white">Advanced</div>
-        <FieldLabel htmlFor="css">Custom CSS Class</FieldLabel>
-        <input
-          id="css"
-          className="input-field font-mono text-[13px]"
-          value={customCss}
-          onChange={(e) => setCustomCss(e.target.value)}
-        />
-        <p className="mt-1.5 text-[12px] text-t3">Add custom CSS class for advanced styling.</p>
-
-        <div className="my-5 border-t border-white/[0.06]" />
-
-        <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-danger/30 px-3 py-2.5 text-[14px] font-semibold text-danger transition-colors duration-150 hover:bg-danger/10">
-          <Icon name="trash" size={16} />
-          Delete Section
-        </button>
       </section>
     </div>
   )

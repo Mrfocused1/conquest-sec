@@ -10,7 +10,7 @@ type Tab = 'content' | 'design' | 'settings'
 
 export function MobileEditor({ title, onBack }: { title: string; onBack: () => void }) {
   const [tab, setTab] = useState<Tab>('content')
-  const { content, setContent, design, setDesign, visibility, setVisibility, seo, setSeo, customCss, setCustomCss, dirty, markSaved } = useCms()
+  const { content, setContent, design, setDesign, seo, setSeo, dirty, saveError, markSaved } = useCms()
 
   return (
     <div className="pb-28">
@@ -25,9 +25,15 @@ export function MobileEditor({ title, onBack }: { title: string; onBack: () => v
         </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-[15px] font-semibold text-white">{title}</div>
-          <div className="flex items-center gap-1.5 text-[11.5px] text-t3">
-            <span className={`h-1.5 w-1.5 rounded-full ${dirty ? 'bg-warn' : 'bg-ok'}`} />
-            {dirty ? 'Editing…' : 'Auto-saved'}
+          <div
+            className={`flex items-center gap-1.5 text-[11.5px] ${saveError ? 'text-danger' : 'text-t3'}`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                saveError ? 'bg-danger' : dirty ? 'bg-warn' : 'bg-ok'
+              }`}
+            />
+            {saveError ? 'Save failed' : dirty ? 'Editing…' : 'Saved'}
           </div>
         </div>
         <button className="btn-white px-4 py-2" onClick={markSaved}>
@@ -141,19 +147,7 @@ export function MobileEditor({ title, onBack }: { title: string; onBack: () => v
                 Upload New Logo
               </button>
             </div>
-            <div>
-              <FieldLabel htmlFor="m-bg">Background Style</FieldLabel>
-              <Select
-                id="m-bg"
-                value={design.bgStyle}
-                onChange={(v) => setDesign({ bgStyle: v })}
-                options={['Dark Gradient', 'Solid Black', 'Mesh Glow', 'Noise Texture']}
-              />
-            </div>
             <div className="card-surface divide-y divide-white/[0.05]">
-              <Row label="Enable Glow">
-                <Toggle checked={design.glow} onChange={(v) => setDesign({ glow: v })} label="Enable glow" />
-              </Row>
               <Row label="Enable Animation">
                 <Toggle
                   checked={design.animation}
@@ -176,28 +170,6 @@ export function MobileEditor({ title, onBack }: { title: string; onBack: () => v
                 onChange={(e) => setDesign({ logoSize: Number(e.target.value) })}
                 className="slider w-full"
               />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <FieldLabel htmlFor="m-tp">Top Spacing</FieldLabel>
-                <input
-                  id="m-tp"
-                  type="number"
-                  className="input-field"
-                  value={design.topPadding}
-                  onChange={(e) => setDesign({ topPadding: Number(e.target.value) })}
-                />
-              </div>
-              <div>
-                <FieldLabel htmlFor="m-bp">Bottom Spacing</FieldLabel>
-                <input
-                  id="m-bp"
-                  type="number"
-                  className="input-field"
-                  value={design.bottomPadding}
-                  onChange={(e) => setDesign({ bottomPadding: Number(e.target.value) })}
-                />
-              </div>
             </div>
             <div>
               <FieldLabel>Logo Alignment</FieldLabel>
@@ -222,20 +194,6 @@ export function MobileEditor({ title, onBack }: { title: string; onBack: () => v
 
         {tab === 'settings' && (
           <>
-            <div>
-              <div className="mb-2 text-[14px] font-semibold text-white">Visibility</div>
-              <div className="card-surface divide-y divide-white/[0.05]">
-                <Row label="Desktop">
-                  <Toggle checked={visibility.desktop} onChange={(v) => setVisibility({ desktop: v })} label="Desktop" />
-                </Row>
-                <Row label="Tablet">
-                  <Toggle checked={visibility.tablet} onChange={(v) => setVisibility({ tablet: v })} label="Tablet" />
-                </Row>
-                <Row label="Mobile">
-                  <Toggle checked={visibility.mobile} onChange={(v) => setVisibility({ mobile: v })} label="Mobile" />
-                </Row>
-              </div>
-            </div>
             <div>
               <div className="mb-2 text-[14px] font-semibold text-white">SEO Settings</div>
               <div className="space-y-3">
@@ -268,20 +226,6 @@ export function MobileEditor({ title, onBack }: { title: string; onBack: () => v
                   />
                 </div>
               </div>
-            </div>
-            <div>
-              <div className="mb-2 text-[14px] font-semibold text-white">Advanced</div>
-              <FieldLabel htmlFor="m-css">Custom CSS Class</FieldLabel>
-              <input
-                id="m-css"
-                className="input-field font-mono text-[13px]"
-                value={customCss}
-                onChange={(e) => setCustomCss(e.target.value)}
-              />
-              <button className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-danger/30 px-3 py-3 text-[14px] font-semibold text-danger transition-colors duration-150 active:bg-danger/10">
-                <Icon name="trash" size={16} />
-                Delete Section
-              </button>
             </div>
           </>
         )}

@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from './Icon'
 import { SECTIONS } from '../data/nav'
-import { fetchSections, type SectionRow } from '../lib/cmsApi'
+import {
+  fetchSections,
+  saveSectionOrder,
+  saveSectionStatus,
+  type SectionRow,
+} from '../lib/cmsApi'
 
 const FALLBACK: SectionRow[] = SECTIONS.map((s) => ({
   key: s.key,
@@ -31,10 +36,21 @@ export function SectionList({ onEdit }: { onEdit?: (key: string) => void }) {
       const next = [...prev]
       const [moved] = next.splice(from, 1)
       next.splice(target, 0, moved)
+      void saveSectionOrder(next.map((r) => r.key)) // persist new homepage order
       return next
     })
     dragIndex.current = null
     setOverIndex(null)
+  }
+
+  function toggleStatus(row: SectionRow) {
+    const publish = row.status !== 'Published'
+    setRows((prev) =>
+      prev.map((r) =>
+        r.key === row.key ? { ...r, status: publish ? 'Published' : 'Draft' } : r,
+      ),
+    )
+    void saveSectionStatus(row.key, publish)
   }
 
   return (
@@ -78,15 +94,17 @@ export function SectionList({ onEdit }: { onEdit?: (key: string) => void }) {
               <Icon name={row.icon} size={17} />
             </span>
             <span className="text-[14.5px] font-medium text-white">{row.name}</span>
-            <span
-              className={`rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+            <button
+              onClick={() => toggleStatus(row)}
+              title="Toggle publish status"
+              className={`rounded-md px-2 py-0.5 text-[11px] font-semibold transition-colors duration-150 ${
                 row.status === 'Published'
-                  ? 'bg-ok/15 text-ok'
-                  : 'bg-warn/15 text-warn'
+                  ? 'bg-ok/15 text-ok hover:bg-ok/25'
+                  : 'bg-warn/15 text-warn hover:bg-warn/25'
               }`}
             >
               {row.status}
-            </span>
+            </button>
 
             <span className="ml-auto hidden text-[13px] text-t3 sm:block">
               Last updated: {row.updated}

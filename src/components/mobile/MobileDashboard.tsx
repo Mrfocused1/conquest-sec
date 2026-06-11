@@ -1,7 +1,37 @@
+import { useEffect, useState } from 'react'
 import { Icon } from '../Icon'
+import { fetchRecentAudit, type AuditRow } from '../../lib/cmsApi'
 import { METRICS, QUICK_ACTIONS, RECENT_CHANGES, type NavKey } from '../../data/nav'
 
-export function MobileDashboard({ onOpenSection }: { onOpenSection: (key: NavKey) => void }) {
+function timeAgo(iso: string): string {
+  const s = Math.max(1, Math.floor((Date.now() - new Date(iso).getTime()) / 1000))
+  if (s < 60) return 'just now'
+  const m = Math.floor(s / 60)
+  if (m < 60) return `${m} minute${m === 1 ? '' : 's'} ago`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h} hour${h === 1 ? '' : 's'} ago`
+  const d = Math.floor(h / 24)
+  return d === 1 ? 'Yesterday' : `${d} days ago`
+}
+
+type Props = {
+  onOpenSection: (key: NavKey) => void
+  stats: { sections: number; blocks: number } | null
+}
+
+export function MobileDashboard({ onOpenSection, stats }: Props) {
+  const [audit, setAudit] = useState<AuditRow[] | null>(null)
+
+  useEffect(() => {
+    fetchRecentAudit(3).then(setAudit)
+  }, [])
+
+  const metrics = METRICS.map((m) => {
+    if (m.label === 'Sections' && stats) return { ...m, value: String(stats.sections) }
+    if (m.label === 'Content Blocks' && stats) return { ...m, value: String(stats.blocks) }
+    return m
+  })
+
   return (
     <div className="px-4 pb-28 pt-5">
       {/* Welcome */}
@@ -10,11 +40,11 @@ export function MobileDashboard({ onOpenSection }: { onOpenSection: (key: NavKey
 
       {/* Metrics */}
       <div className="mt-5 grid grid-cols-2 gap-3">
-        {METRICS.map((m, i) => (
+        {metrics.map((m, i) => (
           <div
             key={m.label}
             className={`card-surface overflow-hidden p-4 ${
-              i === METRICS.length - 1 && METRICS.length % 2 === 1 ? 'col-span-2' : ''
+              i === metrics.length - 1 && metrics.length % 2 === 1 ? 'col-span-2' : ''
             }`}
           >
             <span className="grid h-9 w-9 place-items-center rounded-lg bg-white/[0.05] text-white">
@@ -50,14 +80,21 @@ export function MobileDashboard({ onOpenSection }: { onOpenSection: (key: NavKey
         </div>
       </div>
 
-      {/* Recent changes */}
+      {/* Recent changes — live from the audit log */}
       <div className="mt-7">
         <h2 className="mb-3 text-[16px] font-semibold text-white">Recent Changes</h2>
         <div className="card-surface divide-y divide-white/[0.05] overflow-hidden">
-          {RECENT_CHANGES.map((r, i) => (
+          {(audit && audit.length
+            ? audit.map((r) => ({
+                what: r.summary ?? `${r.section ?? 'Site'} updated`,
+                who: r.actor_name ?? 'Unknown',
+                when: timeAgo(r.created_at),
+              }))
+            : RECENT_CHANGES.map((r) => ({ what: r.what, who: r.who, when: r.when }))
+          ).map((r, i) => (
             <div key={i} className="flex items-center gap-3 px-4 py-3.5">
               <span className="grid h-9 w-9 place-items-center rounded-lg bg-white/[0.05] text-white">
-                <Icon name={r.icon} size={16} />
+                <Icon name="clock" size={16} />
               </span>
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[14px] font-medium text-white">{r.what}</div>

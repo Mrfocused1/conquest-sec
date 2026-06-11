@@ -5,9 +5,11 @@ type Props = {
   title: string
   subtitle: string
   onSettings?: () => void
+  onSignOut?: () => void
+  email?: string
 }
 
-export function TopNav({ title, subtitle, onSettings }: Props) {
+export function TopNav({ title, subtitle, onSettings, onSignOut, email }: Props) {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -45,21 +47,6 @@ export function TopNav({ title, subtitle, onSettings }: Props) {
             aria-label="Search"
           />
         </div>
-        <button
-          className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] text-t2 transition-colors duration-150 hover:border-white/20 hover:text-white"
-          aria-label="Notifications"
-        >
-          <span className="relative">
-            <Icon name="bell" size={18} />
-            <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-ok ring-2 ring-ink" />
-          </span>
-        </button>
-        <button
-          className="grid h-10 w-10 place-items-center rounded-xl border border-white/[0.08] text-t2 transition-colors duration-150 hover:border-white/20 hover:text-white"
-          aria-label="Toggle dark mode"
-        >
-          <Icon name="moon" size={18} />
-        </button>
         <a href="/" target="_blank" rel="noreferrer" className="btn-ghost hidden md:inline-flex">
           <Icon name="external" size={16} />
           View Live Site
@@ -95,7 +82,7 @@ export function TopNav({ title, subtitle, onSettings }: Props) {
                 </span>
                 <div className="min-w-0">
                   <div className="truncate text-[14px] font-semibold text-white">Admin User</div>
-                  <div className="truncate text-[12px] text-t3">admin@conquest.com</div>
+                  <div className="truncate text-[12px] text-t3">{email ?? 'admin@conquest.com'}</div>
                 </div>
               </div>
               <div className="p-1.5">
@@ -130,7 +117,10 @@ export function TopNav({ title, subtitle, onSettings }: Props) {
               <div className="border-t border-white/[0.06] p-1.5">
                 <button
                   role="menuitem"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setOpen(false)
+                    onSignOut?.()
+                  }}
                   className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium text-danger transition-colors duration-150 hover:bg-danger/10"
                 >
                   <Icon name="back" size={17} />

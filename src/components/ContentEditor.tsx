@@ -1,11 +1,10 @@
 import { Icon } from './Icon'
 import { LivePreview } from './LivePreview'
-import { FieldLabel, HelpRow, Select } from './ui/Field'
-import { Toggle } from './ui/Toggle'
+import { FieldLabel, HelpRow } from './ui/Field'
 import { useCms } from '../store/cms'
 
 export function ContentEditor() {
-  const { content, setContent, design, setDesign, dirty, markSaved } = useCms()
+  const { content, setContent, dirty, saveError, markSaved } = useCms()
 
   return (
     <section className="card-surface fade-in overflow-hidden">
@@ -135,75 +134,23 @@ export function ContentEditor() {
             </button>
             <span
               className={`ml-auto flex items-center gap-1.5 text-[12px] transition-opacity duration-150 ${
-                dirty ? 'text-warn opacity-100' : 'text-t3 opacity-70'
+                saveError ? 'text-danger' : dirty ? 'text-warn opacity-100' : 'text-t3 opacity-70'
               }`}
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${dirty ? 'bg-warn' : 'bg-ok'}`} />
-              {dirty ? 'Unsaved changes' : 'All changes saved'}
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  saveError ? 'bg-danger' : dirty ? 'bg-warn' : 'bg-ok'
+                }`}
+              />
+              {saveError ? 'Save failed — please retry' : dirty ? 'Unsaved changes' : 'All changes saved'}
             </span>
           </div>
         </div>
 
-        {/* Live preview + section settings */}
+        {/* Live preview */}
         <div>
           <div className="mb-2 text-[13px] font-medium text-t2">Live Preview</div>
           <LivePreview />
-
-          <div className="mt-6">
-            <div className="mb-3 text-[14px] font-semibold text-white">Section Settings</div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <FieldLabel htmlFor="bg">Background Style</FieldLabel>
-                <Select
-                  id="bg"
-                  value={design.bgStyle}
-                  onChange={(v) => setDesign({ bgStyle: v })}
-                  options={['Dark Gradient', 'Solid Black', 'Mesh Glow', 'Noise Texture']}
-                />
-              </div>
-              <div>
-                <FieldLabel htmlFor="glowToggle">Enable Background Glow</FieldLabel>
-                <div className="flex h-[42px] items-center">
-                  <Toggle
-                    id="glowToggle"
-                    checked={design.glow}
-                    onChange={(v) => setDesign({ glow: v })}
-                    label="Enable background glow"
-                  />
-                </div>
-              </div>
-              <div>
-                <FieldLabel htmlFor="tp">Top Padding</FieldLabel>
-                <div className="relative">
-                  <input
-                    id="tp"
-                    type="number"
-                    className="input-field pr-9"
-                    value={design.topPadding}
-                    onChange={(e) => setDesign({ topPadding: Number(e.target.value) })}
-                  />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-t3">
-                    px
-                  </span>
-                </div>
-              </div>
-              <div>
-                <FieldLabel htmlFor="bp">Bottom Padding</FieldLabel>
-                <div className="relative">
-                  <input
-                    id="bp"
-                    type="number"
-                    className="input-field pr-9"
-                    value={design.bottomPadding}
-                    onChange={(e) => setDesign({ bottomPadding: Number(e.target.value) })}
-                  />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[12px] text-t3">
-                    px
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

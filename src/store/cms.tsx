@@ -46,6 +46,7 @@ type CmsState = {
   customCss: string
   setCustomCss: (v: string) => void
   dirty: boolean
+  saveError: string | null
   markSaved: () => void
 }
 
@@ -89,6 +90,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
   })
   const [customCss, setCustomCss] = useState('hero-section')
   const [dirty, setDirty] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   // Hydrate from Supabase on first load (falls back to defaults if unavailable).
   useEffect(() => {
@@ -137,14 +139,18 @@ export function CmsProvider({ children }: { children: ReactNode }) {
         setDirty(true)
       },
       dirty,
+      saveError,
       markSaved: () => {
         setDirty(false)
-        // Best-effort persist. Writes require an authenticated session (RLS);
-        // failures are swallowed so the local editing experience never blocks.
-        saveHero({ content, design, visibility, seo, customCss }).catch(() => {})
+        setSaveError(null)
+        saveHero({ content, design, visibility, seo, customCss })
+          .then((r) => {
+            if (!r.ok) setSaveError(r.error ?? 'Save failed')
+          })
+          .catch(() => setSaveError('Save failed — check your connection'))
       },
     }),
-    [content, design, visibility, seo, customCss, dirty],
+    [content, design, visibility, seo, customCss, dirty, saveError],
   )
 
   return <CmsContext.Provider value={value}>{children}</CmsContext.Provider>
