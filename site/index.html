@@ -464,6 +464,7 @@
     border: 1px solid var(--border);
     border-radius: 24px; padding: 48px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    scroll-margin-top: 104px; /* clear the sticky navbar when anchored to #contact */
   }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   .field { display: flex; flex-direction: column; }
@@ -992,7 +993,7 @@
 </section>
 
 <!-- ===== Consultation Enquiry Form ===== -->
-<section class="enquiry" id="contact">
+<section class="enquiry" id="enquiry">
   <div class="container inner">
     <div class="enquiry-grid">
       <!-- Left column -->
@@ -1017,7 +1018,7 @@
       </div>
 
       <!-- Right column: form -->
-      <div class="form-card">
+      <div class="form-card" id="contact">
         <form id="enquiryForm" novalidate>
           <div class="form-grid">
             <div class="field">
