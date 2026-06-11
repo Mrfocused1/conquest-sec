@@ -48,6 +48,7 @@ type CmsState = {
   dirty: boolean
   saveError: string | null
   markSaved: () => void
+  reset: () => void
 }
 
 const defaultContent: HeroContent = {
@@ -92,24 +93,23 @@ export function CmsProvider({ children }: { children: ReactNode }) {
   const [dirty, setDirty] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
-  // Hydrate from Supabase on first load (falls back to defaults if unavailable).
-  useEffect(() => {
-    let active = true
+  function hydrate() {
     fetchHero()
       .then((b) => {
-        if (!active || !b) return
+        if (!b) return
         setContentState(b.content)
         setDesignState(b.design)
         setVisibilityState(b.visibility)
         setSeoState(b.seo)
         setCustomCss(b.customCss)
         setDirty(false)
+        setSaveError(null)
       })
       .catch(() => {})
-    return () => {
-      active = false
-    }
-  }, [])
+  }
+
+  // Hydrate from Supabase on first load (falls back to defaults if unavailable).
+  useEffect(hydrate, [])
 
   const value = useMemo<CmsState>(
     () => ({
@@ -149,6 +149,7 @@ export function CmsProvider({ children }: { children: ReactNode }) {
           })
           .catch(() => setSaveError('Save failed — check your connection'))
       },
+      reset: hydrate,
     }),
     [content, design, visibility, seo, customCss, dirty, saveError],
   )

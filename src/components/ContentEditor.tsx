@@ -4,7 +4,7 @@ import { FieldLabel, HelpRow } from './ui/Field'
 import { useCms } from '../store/cms'
 
 export function ContentEditor() {
-  const { content, setContent, dirty, saveError, markSaved } = useCms()
+  const { content, setContent, dirty, saveError, markSaved, reset } = useCms()
 
   return (
     <section className="card-surface fade-in overflow-hidden">
@@ -21,10 +21,10 @@ export function ContentEditor() {
             Edit the hero section content that appears at the top of your homepage.
           </p>
         </div>
-        <button className="btn-ghost ml-auto">
+        <a href="/" target="_blank" rel="noreferrer" className="btn-ghost ml-auto">
           <Icon name="eye" size={16} />
           Preview Section
-        </button>
+        </a>
       </div>
 
       {/* Body: form | preview+settings */}
@@ -128,7 +128,10 @@ export function ContentEditor() {
               <Icon name="check" size={16} />
               Save Changes
             </button>
-            <button className="inline-flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-t2 transition-colors duration-150 hover:text-white">
+            <button
+              onClick={reset}
+              className="inline-flex items-center gap-2 px-3 py-2 text-[14px] font-medium text-t2 transition-colors duration-150 hover:text-white"
+            >
               <Icon name="reset" size={15} />
               Reset
             </button>
