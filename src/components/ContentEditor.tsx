@@ -2,9 +2,11 @@ import { Icon } from './Icon'
 import { LivePreview } from './LivePreview'
 import { FieldLabel, HelpRow } from './ui/Field'
 import { useCms } from '../store/cms'
+import { useDirtyGuard } from '../hooks/useDirtyGuard'
 
 export function ContentEditor() {
   const { content, setContent, dirty, saveError, markSaved, reset } = useCms()
+  useDirtyGuard(dirty)
 
   return (
     <section className="card-surface fade-in overflow-hidden">

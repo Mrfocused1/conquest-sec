@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Icon } from '../Icon'
+import { useDirtyGuard } from '../../hooks/useDirtyGuard'
 
 type Props = {
   title: string
@@ -23,6 +24,7 @@ export function EditorShell({
   children,
   headerExtra,
 }: Props) {
+  useDirtyGuard(dirty)
   return (
     <section className="card-surface fade-in overflow-hidden">
       <div className="flex flex-wrap items-center gap-3 border-b border-white/[0.06] px-5 py-5 sm:px-6">

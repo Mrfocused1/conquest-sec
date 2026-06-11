@@ -25,6 +25,7 @@ import { Login } from './components/Login'
 import { Icon, Mark } from './components/Icon'
 import { useAuth } from './store/auth'
 import { fetchSections, fetchDashboardStats, type SectionRow } from './lib/cmsApi'
+import { anyDirty, confirmDiscard } from './lib/guard'
 import { NAV, SECTIONS, METRICS, type NavKey } from './data/nav'
 
 const TITLES: Record<string, { t: string; s: string }> = {
@@ -92,9 +93,29 @@ export default function App() {
     if (session) fetchDashboardStats().then((s) => s && setStats(s))
   }, [session])
 
+  // Warn before closing/reloading the tab with unsaved edits.
+  useEffect(() => {
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      if (anyDirty()) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [])
+
+  // Guarded navigation — confirm before discarding unsaved changes.
+  function navTo(key: NavKey) {
+    if (confirmDiscard()) setActive(key)
+  }
   function openEditor(key: NavKey) {
+    if (!confirmDiscard()) return
     setEditor({ open: true, key })
     window.scrollTo({ top: 0 })
+  }
+  function closeEditor() {
+    if (confirmDiscard()) setEditor({ open: false, key: 'hero' })
   }
 
   if (loading) {
@@ -120,12 +141,12 @@ export default function App() {
     <div className="min-h-screen bg-ink">
       {/* ===================== DESKTOP ===================== */}
       <div className="hidden h-screen lg:flex">
-        <Sidebar active={active} onNavigate={setActive} />
+        <Sidebar active={active} onNavigate={navTo} />
         <main className="thin-scroll h-screen flex-1 overflow-y-auto">
           <TopNav
             title={meta.t}
             subtitle={meta.s}
-            onSettings={() => setActive('settings')}
+            onSettings={() => navTo('settings')}
             onSignOut={signOut}
             email={session.user.email ?? 'admin@conquest.com'}
           />
@@ -139,7 +160,7 @@ export default function App() {
                     ))}
                   </div>
                   <ContentEditor />
-                  <SectionList onEdit={(key) => setActive(key as NavKey)} />
+                  <SectionList onEdit={(key) => navTo(key as NavKey)} />
                 </div>
                 <div className="min-w-0">
                   <SettingsPanel />
@@ -158,15 +179,12 @@ export default function App() {
 
         {editor.open ? (
           editor.key === 'hero' ? (
-            <MobileEditor
-              title={labelFor('hero')}
-              onBack={() => setEditor({ open: false, key: 'hero' })}
-            />
+            <MobileEditor title={labelFor('hero')} onBack={closeEditor} />
           ) : (
             <div className="pb-28">
               <div className="sticky top-16 z-20 flex items-center gap-2 border-b border-white/[0.06] bg-ink/90 px-3 py-3 backdrop-blur-xl">
                 <button
-                  onClick={() => setEditor({ open: false, key: 'hero' })}
+                  onClick={closeEditor}
                   className="grid h-9 w-9 place-items-center rounded-xl border border-white/[0.1] text-white"
                   aria-label="Back"
                 >
@@ -212,6 +230,7 @@ export default function App() {
         <BottomNav
           active={tab}
           onChange={(t) => {
+            if (!confirmDiscard()) return
             setEditor({ open: false, key: 'hero' })
             setTab(t)
           }}
@@ -265,6 +284,7 @@ export default function App() {
                   <button
                     key={item.key}
                     onClick={() => {
+                      if (!confirmDiscard()) return
                       setDrawer(false)
                       setEditor({ open: false, key: 'hero' })
                       if (item.key === 'dashboard') setTab('dashboard')

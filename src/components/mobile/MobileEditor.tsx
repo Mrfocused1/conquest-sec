@@ -4,6 +4,7 @@ import { LivePreview } from '../LivePreview'
 import { FieldLabel, HelpRow, Select } from '../ui/Field'
 import { Toggle } from '../ui/Toggle'
 import { useCms } from '../../store/cms'
+import { useDirtyGuard } from '../../hooks/useDirtyGuard'
 import { LOGO_URL } from '../../lib/assets'
 
 type Tab = 'content' | 'design' | 'settings'
@@ -11,6 +12,7 @@ type Tab = 'content' | 'design' | 'settings'
 export function MobileEditor({ title, onBack }: { title: string; onBack: () => void }) {
   const [tab, setTab] = useState<Tab>('content')
   const { content, setContent, design, setDesign, seo, setSeo, dirty, saveError, markSaved } = useCms()
+  useDirtyGuard(dirty)
 
   return (
     <div className="pb-28">
