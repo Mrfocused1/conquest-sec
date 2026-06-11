@@ -16,7 +16,7 @@ function timeAgo(iso: string): string {
 
 type Props = {
   onOpenSection: (key: NavKey) => void
-  stats: { sections: number; blocks: number } | null
+  stats: { sections: number; blocks: number; views: string } | null
 }
 
 export function MobileDashboard({ onOpenSection, stats }: Props) {
@@ -29,6 +29,7 @@ export function MobileDashboard({ onOpenSection, stats }: Props) {
   const metrics = METRICS.map((m) => {
     if (m.label === 'Sections' && stats) return { ...m, value: String(stats.sections) }
     if (m.label === 'Content Blocks' && stats) return { ...m, value: String(stats.blocks) }
+    if (m.label === 'Page Views' && stats) return { ...m, value: stats.views }
     return m
   })
 

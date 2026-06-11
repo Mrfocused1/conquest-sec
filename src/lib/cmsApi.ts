@@ -464,7 +464,12 @@ export async function saveSiteSettings(s: SiteSettings): Promise<Result> {
 
 /* ===================== Dashboard stats + recent activity ===================== */
 
-export type DashboardStats = { sections: number; blocks: number }
+export type DashboardStats = { sections: number; blocks: number; views: string }
+
+function compactNumber(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}K`
+  return String(n)
+}
 
 export async function fetchDashboardStats(): Promise<DashboardStats | null> {
   try {
@@ -476,7 +481,12 @@ export async function fetchDashboardStats(): Promise<DashboardStats | null> {
       const r = await supabase.from(t).select('id', { count: 'exact', head: true })
       blocks += r.count ?? 0
     }
-    return { sections: sections.count ?? 0, blocks }
+    const { data: views } = await supabase.rpc('page_views_30d')
+    return {
+      sections: sections.count ?? 0,
+      blocks,
+      views: views != null ? compactNumber(Number(views)) : '—',
+    }
   } catch {
     return null
   }

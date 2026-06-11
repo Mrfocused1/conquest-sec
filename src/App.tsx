@@ -69,7 +69,7 @@ const DASHBOARD_VIEWS: NavKey[] = ['dashboard', 'hero']
 export default function App() {
   const { session, loading, signOut } = useAuth()
   const [active, setActive] = useState<NavKey>('dashboard')
-  const [stats, setStats] = useState<{ sections: number; blocks: number } | null>(null)
+  const [stats, setStats] = useState<{ sections: number; blocks: number; views: string } | null>(null)
 
   // mobile state
   const [tab, setTab] = useState<MobileTab>('dashboard')
@@ -103,6 +103,7 @@ export default function App() {
   const liveMetrics = METRICS.map((m) => {
     if (m.label === 'Sections' && stats) return { ...m, value: String(stats.sections) }
     if (m.label === 'Content Blocks' && stats) return { ...m, value: String(stats.blocks) }
+    if (m.label === 'Page Views' && stats) return { ...m, value: stats.views }
     return m
   })
 
